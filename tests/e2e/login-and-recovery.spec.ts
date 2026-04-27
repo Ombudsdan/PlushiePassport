@@ -9,13 +9,13 @@ test("existing user can log in, browse passport details, review notifications, a
 
   await page.goto("/plushies");
   await page.getByRole("link", { name: /Mochi/ }).click();
-  await expect(page.getByText("Plushie passport")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Plushie Passport" })).toBeVisible();
   await expect(page.getByText("Collecting station stamps")).toBeVisible();
 
   await page.goto("/notifications");
   await expect(page.getByText("Notification inbox")).toBeVisible();
   await page.getByRole("button", { name: "Unread only" }).click();
-  await expect(page.getByText(/birthday is coming up|next stop/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /birthday is coming up|next stop/ }).first()).toBeVisible();
 
   await page.goto("/profile");
   await expect(page.getByText("Account Settings")).toBeVisible();

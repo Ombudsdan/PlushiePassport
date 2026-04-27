@@ -15,7 +15,7 @@ test("user can sign up, manage profile, add a plushie, review passport, and log 
   await expect(page).toHaveURL(/\/dashboard/);
   await expect(page.getByText("My Plushie Collection")).toBeVisible();
 
-  await page.getByRole("link", { name: "Manage account" }).click();
+  await page.getByRole("link", { name: "Profile" }).click();
   await expect(page).toHaveURL(/\/profile/);
   await page.getByLabel("Display Name").fill("Jamie Passport");
   await page.getByRole("button", { name: "Save Changes" }).click();
@@ -44,7 +44,7 @@ test("user can sign up, manage profile, add a plushie, review passport, and log 
   await expect(page).toHaveURL(/\/plushies/);
   await page.getByRole("link", { name: /Comet/ }).click();
   await expect(page).toHaveURL(/\/plushies\//);
-  await expect(page.getByText("Plushie passport")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Plushie Passport" })).toBeVisible();
   await expect(page.getByText("Blueberry gummies")).toBeVisible();
 
   await page.getByRole("link", { name: "Notifications" }).click();
