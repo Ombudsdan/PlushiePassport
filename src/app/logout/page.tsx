@@ -8,11 +8,13 @@ import { AuthTemplate } from "@/components/templates/AuthTemplate";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function LogoutPage() {
-  const { logout } = useAuth();
+  const { isHydrated, logout } = useAuth();
 
   useEffect(() => {
-    logout();
-  }, [logout]);
+    if (isHydrated) {
+      logout();
+    }
+  }, [isHydrated, logout]);
 
   return (
     <AuthTemplate>

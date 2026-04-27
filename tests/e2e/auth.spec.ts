@@ -20,7 +20,7 @@ test("user can sign up, manage profile, and log out", async ({ page }) => {
   await page.getByLabel("Display Name").fill("Jamie Passport");
   await page.getByRole("button", { name: "Save Changes" }).click();
   await expect(page.getByText("Profile saved successfully.")).toBeVisible();
-  await expect(page.getByText("Jamie Passport")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Jamie Passport" })).toBeVisible();
 
   await page.getByRole("button", { name: "Birthday reminders" }).click();
   await page.getByRole("button", { name: "Add Account" }).click();

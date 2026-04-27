@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  startTransition,
   createContext,
   useCallback,
   useContext,
@@ -32,6 +33,7 @@ import {
 type AuthContextValue = {
   currentUser: ReturnType<typeof getCurrentUser>;
   isAuthenticated: boolean;
+  isHydrated: boolean;
   signUp: (input: SignUpInput) => void;
   login: (input: LoginInput) => void;
   logout: () => void;
@@ -43,10 +45,16 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AuthState>(() => loadAuthState(globalThis.localStorage));
+  const [state, setState] = useState<AuthState>(defaultAuthState);
+  const [isHydrated, setIsHydrated] = useState(false);
   const stateRef = useRef(state);
 
   useEffect(() => {
+    startTransition(() => {
+      setState(loadAuthState(globalThis.localStorage));
+      setIsHydrated(true);
+    });
+
     if ("serviceWorker" in navigator && navigator.serviceWorker) {
       void navigator.serviceWorker.register("/sw.js");
     }
@@ -54,8 +62,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     stateRef.current = state;
-    persistAuthState(globalThis.localStorage, state);
-  }, [state]);
+    if (isHydrated) {
+      persistAuthState(globalThis.localStorage, state);
+    }
+  }, [isHydrated, state]);
 
   const signUp = useCallback((input: SignUpInput) => {
     setState(signUpUser(stateRef.current, input));
@@ -87,6 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       currentUser,
       isAuthenticated: Boolean(currentUser),
+      isHydrated,
       signUp,
       login,
       logout,
@@ -94,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toggleNotification,
       toggleAccount,
     }),
-    [currentUser, login, logout, saveProfile, signUp, toggleAccount, toggleNotification],
+    [currentUser, isHydrated, login, logout, saveProfile, signUp, toggleAccount, toggleNotification],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

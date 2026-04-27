@@ -6,9 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { navItems } from "@/lib/routes";
 
 export function AppSidebar({ activePath }: { activePath: string }) {
-  const { currentUser } = useAuth();
-  const displayName = currentUser?.displayName ?? "Sarah J.";
-  const plan = currentUser?.plan ?? "Free Plan";
+  const { currentUser, isHydrated } = useAuth();
+  const displayName = isHydrated ? currentUser?.displayName ?? "Sarah J." : "Sarah J.";
+  const plan = isHydrated ? currentUser?.plan ?? "Free Plan" : "Free Plan";
   const initials = displayName
     .split(" ")
     .map((part) => part[0])
