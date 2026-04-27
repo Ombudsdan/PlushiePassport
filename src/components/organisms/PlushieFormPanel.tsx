@@ -73,8 +73,8 @@ export function PlushieFormPanel({
           <span>Tagline</span>
           <TextArea value={plushie.tagline} onChange={(event) => onChange("tagline", event.target.value)} />
         </label>
-        {error ? <p className="md:col-span-2 text-sm font-medium text-[#b42318]">{error}</p> : null}
-        <div className="md:col-span-2 flex justify-end">
+        {error ? <p className="text-sm font-medium text-[#b42318] md:col-span-2">{error}</p> : null}
+        <div className="flex justify-end md:col-span-2">
           <Button type="submit">Save Plushie</Button>
         </div>
       </form>
