@@ -1,0 +1,38 @@
+import { Avatar } from "@/components/atoms/Avatar";
+import { SidebarLink } from "@/components/molecules/SidebarLink";
+import { navItems } from "@/lib/routes";
+
+export function AppSidebar({ activePath }: { activePath: string }) {
+  return (
+    <aside className="flex w-full max-w-[220px] flex-col justify-between border-r border-[#e7e0d5] bg-white px-6 py-8">
+      <div>
+        <div className="mb-10 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#171717] text-sm font-bold text-white">
+            PP
+          </div>
+          <div>
+            <p className="text-lg font-bold">Plushie Passport</p>
+            <p className="text-sm text-[#716a60]">Passport for every plushie</p>
+          </div>
+        </div>
+        <nav className="flex flex-col gap-1">
+          {navItems.map((item) => (
+            <SidebarLink
+              key={item.label}
+              href={item.href}
+              label={item.label}
+              active={activePath === item.href || (item.href === "/profile" && activePath === "/profile")}
+            />
+          ))}
+        </nav>
+      </div>
+      <div className="flex items-center gap-3 border-t border-[#efe7da] pt-6">
+        <Avatar initials="SJ" size="sm" />
+        <div>
+          <p className="text-sm font-semibold">Sarah J.</p>
+          <p className="text-xs text-[#716a60]">Free Plan</p>
+        </div>
+      </div>
+    </aside>
+  );
+}
