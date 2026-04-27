@@ -1,3 +1,4 @@
+import { LayoutDashboard } from "lucide-react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Avatar } from "@/components/atoms/Avatar";
@@ -38,7 +39,7 @@ describe("component rendering", () => {
         <Pill>Neutral</Pill>
         <Pill tone="success">Success</Pill>
         <FieldGroup label="Field label" hint="Helpful hint" defaultValue="value" />
-        <SidebarLink href="/profile" label="Profile" active />
+        <SidebarLink href="/profile" label="Profile" icon={LayoutDashboard} active />
         <NotificationRow preference={seedAccount.notifications[0]} onToggle={toggleSpy} />
         <ConnectedAccountRow account={seedAccount.connectedAccounts[2]} onToggle={accountSpy} />
       </div>,
@@ -79,7 +80,7 @@ describe("component rendering", () => {
           accounts={seedAccount.connectedAccounts.map((account) => ({ ...account, connected: true }))}
           onToggle={toggleAccount}
         />
-        <AppSidebar activePath="/profile" />
+        <AppSidebar activePath="/notifications" />
       </div>,
       { ...defaultAuthState, currentUserEmail: seedAccount.email },
     );
@@ -102,5 +103,6 @@ describe("component rendering", () => {
     expect(screen.getByText("Unlock unlimited plushies & more")).toBeInTheDocument();
     expect(screen.getByText("Card footer")).toBeInTheDocument();
     expect(screen.getByText("Shell body")).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "Notifications" })[0]).toHaveAttribute("href", "/notifications");
   });
 });

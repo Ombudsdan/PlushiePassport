@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("user can sign up, manage profile, add a plushie, and log out", async ({ page }) => {
+test("user can sign up, manage profile, add a plushie, review passport, and log out", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Plushie Passport")).toBeVisible();
 
@@ -13,7 +13,7 @@ test("user can sign up, manage profile, add a plushie, and log out", async ({ pa
   await page.getByRole("button", { name: "Create account" }).click();
 
   await expect(page).toHaveURL(/\/dashboard/);
-  await expect(page.getByText("Welcome back, Jamie Plush")).toBeVisible();
+  await expect(page.getByText("My Plushie Collection")).toBeVisible();
 
   await page.getByRole("link", { name: "Manage account" }).click();
   await expect(page).toHaveURL(/\/profile/);
@@ -42,7 +42,16 @@ test("user can sign up, manage profile, add a plushie, and log out", async ({ pa
   await page.getByRole("button", { name: "Save Plushie" }).click();
 
   await expect(page).toHaveURL(/\/plushies/);
-  await expect(page.getByRole("heading", { name: "Comet" })).toBeVisible();
+  await page.getByRole("link", { name: /Comet/ }).click();
+  await expect(page).toHaveURL(/\/plushies\//);
+  await expect(page.getByText("Plushie passport")).toBeVisible();
+  await expect(page.getByText("Blueberry gummies")).toBeVisible();
+
+  await page.getByRole("link", { name: "Notifications" }).click();
+  await expect(page).toHaveURL(/\/notifications/);
+  await page.getByRole("button", { name: "Unread only" }).click();
+  await page.getByRole("button", { name: "Mark all as read" }).click();
+  await expect(page.getByText("All caught up")).toBeVisible();
 
   await page.goto("/logout");
   await expect(page.getByText("You have been logged out")).toBeVisible();

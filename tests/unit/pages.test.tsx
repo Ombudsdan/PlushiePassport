@@ -92,7 +92,17 @@ describe("app pages", () => {
     renderWithProviders(<DashboardPage />);
     await waitFor(() => expect(screen.getByText("You're signed out")).toBeInTheDocument());
 
+    cleanup();
+    renderWithProviders(<DashboardPage />, {
+      ...defaultAuthState,
+      currentUserEmail: seedAccount.email,
+    });
+    await waitFor(() => expect(screen.getByText("My Plushie Collection")).toBeInTheDocument());
+    expect(screen.getByText("Latest notifications")).toBeInTheDocument();
+    expect(screen.getByText("Upcoming birthdays")).toBeInTheDocument();
+
     const user = userEvent.setup();
+    cleanup();
     renderWithProviders(<ProfilePage />, {
       ...defaultAuthState,
       currentUserEmail: seedAccount.email,

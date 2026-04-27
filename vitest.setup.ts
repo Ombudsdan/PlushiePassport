@@ -10,15 +10,17 @@ afterEach(() => {
 
 const push = vi.fn();
 const replace = vi.fn();
+const params = { id: "" };
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push,
     replace,
   }),
+  useParams: () => params,
 }));
 
 Object.defineProperty(globalThis, "__routerMocks", {
-  value: { push, replace },
+  value: { push, replace, params },
   writable: true,
 });

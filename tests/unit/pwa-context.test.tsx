@@ -98,7 +98,7 @@ describe("pwa helpers and auth context", () => {
       currentUserEmail: seedAccount.email,
     });
 
-    await waitFor(() => expect(screen.getByText(/Welcome back, Sarah Johnson/)).toBeInTheDocument());
-    expect(screen.getByText(/manifest, service worker/)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText("My Plushie Collection")).toBeInTheDocument());
+    expect(screen.getByText("Latest notifications")).toBeInTheDocument();
   });
 });

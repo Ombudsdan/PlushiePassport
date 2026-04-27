@@ -17,7 +17,7 @@ export function AppSidebar({ activePath }: { activePath: string }) {
     .toUpperCase();
 
   return (
-    <aside className="flex w-full max-w-[220px] flex-col justify-between border-r border-[#e7e0d5] bg-white px-6 py-8">
+    <aside className="flex w-full max-w-[240px] flex-col justify-between border-r border-[#e7e0d5] bg-white px-6 py-8">
       <div>
         <div className="mb-10 flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#171717] text-sm font-bold text-white">
@@ -34,6 +34,7 @@ export function AppSidebar({ activePath }: { activePath: string }) {
               key={item.label}
               href={item.href}
               label={item.label}
+              icon={item.icon}
               active={activePath === item.href || activePath.startsWith(`${item.href}/`)}
             />
           ))}

@@ -1,14 +1,21 @@
 import { expect, test } from "@playwright/test";
 
-test("existing user can log in, browse plushies, and recover password", async ({ page }) => {
+test("existing user can log in, browse passport details, review notifications, and recover password", async ({ page }) => {
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/dashboard/);
-  await expect(page.getByText("Welcome back, Sarah Johnson")).toBeVisible();
+  await expect(page.getByText("My Plushie Collection")).toBeVisible();
+  await expect(page.getByText("Latest notifications")).toBeVisible();
 
   await page.goto("/plushies");
-  await expect(page.getByRole("heading", { name: "Mochi" })).toBeVisible();
-  await expect(page.getByText("Snowy explorer with a passport full of cozy cafe stops.")).toBeVisible();
+  await page.getByRole("link", { name: /Mochi/ }).click();
+  await expect(page.getByText("Plushie passport")).toBeVisible();
+  await expect(page.getByText("Collecting station stamps")).toBeVisible();
+
+  await page.goto("/notifications");
+  await expect(page.getByText("Notification inbox")).toBeVisible();
+  await page.getByRole("button", { name: "Unread only" }).click();
+  await expect(page.getByText(/birthday is coming up|next stop/)).toBeVisible();
 
   await page.goto("/profile");
   await expect(page.getByText("Account Settings")).toBeVisible();
