@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
+import { FieldGroup } from "@/components/molecules/FieldGroup";
 import { AuthCard } from "@/components/organisms/AuthCard";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
 import { useAuth } from "@/contexts/AuthContext";
+import { toErrorMessage } from "@/lib/errors";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,32 +35,22 @@ export default function LoginPage() {
               login(form);
               router.push("/dashboard");
             } catch (submissionError) {
-              setError(
-                submissionError instanceof Error
-                  ? submissionError.message
-                  : "We couldn't sign you in.",
-              );
+              setError(toErrorMessage(submissionError, "We couldn't sign you in."));
             }
           }}
         >
-          <label className="flex flex-col gap-2 text-sm font-medium">
-            <span>Email</span>
-            <input
-              className="w-full rounded-xl border border-[#e2dacd] px-4 py-3"
-              type="email"
-              value={form.email}
-              onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-            />
-          </label>
-          <label className="flex flex-col gap-2 text-sm font-medium">
-            <span>Password</span>
-            <input
-              className="w-full rounded-xl border border-[#e2dacd] px-4 py-3"
-              type="password"
-              value={form.password}
-              onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-            />
-          </label>
+          <FieldGroup
+            label="Email"
+            type="email"
+            value={form.email}
+            onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+          />
+          <FieldGroup
+            label="Password"
+            type="password"
+            value={form.password}
+            onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+          />
           {error ? <p className="text-sm font-medium text-[#b42318]">{error}</p> : null}
           <Button type="submit" fullWidth>
             Continue

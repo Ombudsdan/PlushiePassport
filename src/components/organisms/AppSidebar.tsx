@@ -1,8 +1,21 @@
+"use client";
+
 import { Avatar } from "@/components/atoms/Avatar";
 import { SidebarLink } from "@/components/molecules/SidebarLink";
+import { useAuth } from "@/contexts/AuthContext";
 import { navItems } from "@/lib/routes";
 
 export function AppSidebar({ activePath }: { activePath: string }) {
+  const { currentUser } = useAuth();
+  const displayName = currentUser?.displayName ?? "Sarah J.";
+  const plan = currentUser?.plan ?? "Free Plan";
+  const initials = displayName
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <aside className="flex w-full max-w-[220px] flex-col justify-between border-r border-[#e7e0d5] bg-white px-6 py-8">
       <div>
@@ -27,10 +40,10 @@ export function AppSidebar({ activePath }: { activePath: string }) {
         </nav>
       </div>
       <div className="flex items-center gap-3 border-t border-[#efe7da] pt-6">
-        <Avatar initials="SJ" size="sm" />
+        <Avatar initials={initials} size="sm" />
         <div>
-          <p className="text-sm font-semibold">Sarah J.</p>
-          <p className="text-xs text-[#716a60]">Free Plan</p>
+          <p className="text-sm font-semibold">{displayName}</p>
+          <p className="text-xs text-[#716a60]">{plan}</p>
         </div>
       </div>
     </aside>

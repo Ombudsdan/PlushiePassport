@@ -4,15 +4,7 @@ import { Button } from "@/components/atoms/Button";
 import { useAuth } from "@/contexts/AuthContext";
 
 export function ProtectedContent({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isHydrated } = useAuth();
-
-  if (!isHydrated) {
-    return (
-      <section className="rounded-[28px] border border-[#e7e0d5] bg-white p-8 shadow-sm">
-        <p className="text-sm text-[#716a60]">Loading your plushie passport…</p>
-      </section>
-    );
-  }
+  const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
     return (

@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -31,7 +32,6 @@ import {
 type AuthContextValue = {
   currentUser: ReturnType<typeof getCurrentUser>;
   isAuthenticated: boolean;
-  isHydrated: boolean;
   signUp: (input: SignUpInput) => void;
   login: (input: LoginInput) => void;
   logout: () => void;
@@ -43,46 +43,42 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AuthState>(defaultAuthState);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [state, setState] = useState<AuthState>(() => loadAuthState(globalThis.localStorage));
+  const stateRef = useRef(state);
 
   useEffect(() => {
-    setState(loadAuthState(window.localStorage));
-    setIsHydrated(true);
-
-    if ("serviceWorker" in navigator) {
+    if ("serviceWorker" in navigator && navigator.serviceWorker) {
       void navigator.serviceWorker.register("/sw.js");
     }
   }, []);
 
   useEffect(() => {
-    if (isHydrated) {
-      persistAuthState(window.localStorage, state);
-    }
-  }, [isHydrated, state]);
+    stateRef.current = state;
+    persistAuthState(globalThis.localStorage, state);
+  }, [state]);
 
   const signUp = useCallback((input: SignUpInput) => {
-    setState((currentState) => signUpUser(currentState, input));
+    setState(signUpUser(stateRef.current, input));
   }, []);
 
   const login = useCallback((input: LoginInput) => {
-    setState((currentState) => loginUser(currentState, input));
+    setState(loginUser(stateRef.current, input));
   }, []);
 
   const logout = useCallback(() => {
-    setState((currentState) => logoutUser(currentState));
+    setState(logoutUser(stateRef.current));
   }, []);
 
   const saveProfile = useCallback((update: ProfileUpdate) => {
-    setState((currentState) => updateProfile(currentState, update));
+    setState(updateProfile(stateRef.current, update));
   }, []);
 
   const toggleNotification = useCallback((id: NotificationPreference["id"]) => {
-    setState((currentState) => toggleNotificationPreference(currentState, id));
+    setState(toggleNotificationPreference(stateRef.current, id));
   }, []);
 
   const toggleAccount = useCallback((id: ConnectedAccount["id"]) => {
-    setState((currentState) => toggleConnectedAccount(currentState, id));
+    setState(toggleConnectedAccount(stateRef.current, id));
   }, []);
 
   const currentUser = useMemo(() => getCurrentUser(state), [state]);
@@ -91,7 +87,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       currentUser,
       isAuthenticated: Boolean(currentUser),
-      isHydrated,
       signUp,
       login,
       logout,
@@ -99,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toggleNotification,
       toggleAccount,
     }),
-    [currentUser, isHydrated, login, logout, saveProfile, signUp, toggleAccount, toggleNotification],
+    [currentUser, login, logout, saveProfile, signUp, toggleAccount, toggleNotification],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

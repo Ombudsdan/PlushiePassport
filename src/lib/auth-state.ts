@@ -131,9 +131,10 @@ export function loadAuthState(storage: Pick<Storage, "getItem"> | null | undefin
 
   try {
     const parsed = JSON.parse(rawState) as AuthState;
+    const hasAccounts = Boolean(parsed.accounts?.length);
     return {
-      accounts: parsed.accounts?.length ? parsed.accounts : defaultAuthState.accounts,
-      currentUserEmail: parsed.currentUserEmail ?? null,
+      accounts: hasAccounts ? parsed.accounts : defaultAuthState.accounts,
+      currentUserEmail: hasAccounts ? parsed.currentUserEmail ?? null : null,
     };
   } catch {
     return defaultAuthState;

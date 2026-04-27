@@ -8,6 +8,7 @@ import { FieldGroup } from "@/components/molecules/FieldGroup";
 import { AuthCard } from "@/components/organisms/AuthCard";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
 import { useAuth } from "@/contexts/AuthContext";
+import { toErrorMessage } from "@/lib/errors";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -40,11 +41,7 @@ export default function SignUpPage() {
               signUp(form);
               router.push("/dashboard");
             } catch (submissionError) {
-              setError(
-                submissionError instanceof Error
-                  ? submissionError.message
-                  : "We couldn't create your account.",
-              );
+              setError(toErrorMessage(submissionError, "We couldn't create your account."));
             }
           }}
         >
