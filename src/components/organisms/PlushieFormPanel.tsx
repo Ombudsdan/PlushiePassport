@@ -69,7 +69,7 @@ export function PlushieFormPanel({
             onChange={(event) => onChange("accessories", event.target.value)}
           />
         </div>
-        <label className="md:col-span-2 flex flex-col gap-2 text-sm font-medium text-[#171717]">
+        <label className="flex flex-col gap-2 text-sm font-medium text-[#171717] md:col-span-2">
           <span>Tagline</span>
           <TextArea value={plushie.tagline} onChange={(event) => onChange("tagline", event.target.value)} />
         </label>
