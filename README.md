@@ -32,3 +32,12 @@ npm run test:e2e
 - Authenticated dashboard and profile management experience
 - Notification preference management and connected account controls
 - PWA manifest and service worker registration for installability
+
+## Storybook component library
+
+```bash
+npm run storybook
+npm run build-storybook
+```
+
+Storybook documents the atomic-design component library with reusable examples and copyable source snippets. The static build is emitted to `storybook-static/`, which keeps it compatible with later deployment to a dedicated documentation subdomain.

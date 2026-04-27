@@ -9,6 +9,7 @@ test("existing user can log in, browse passport details, review notifications, a
 
   await page.goto("/plushies");
   await page.getByRole("link", { name: /Mochi/ }).click();
+  await expect(page).toHaveURL(/\/plushies\/.+/);
   await expect(page.getByRole("heading", { name: "Plushie Passport" })).toBeVisible();
   await expect(page.getByText("Collecting station stamps")).toBeVisible();
 
