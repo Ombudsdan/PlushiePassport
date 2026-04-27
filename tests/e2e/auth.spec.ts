@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("user can sign up, manage profile, and log out", async ({ page }) => {
+test("user can sign up, manage profile, add a plushie, and log out", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Plushie Passport")).toBeVisible();
 
@@ -25,6 +25,24 @@ test("user can sign up, manage profile, and log out", async ({ page }) => {
   await page.getByRole("button", { name: "Birthday reminders" }).click();
   await page.getByRole("button", { name: "Add Account" }).click();
   await expect(page.getByText("Connected Accounts")).toBeVisible();
+
+  await page.getByRole("link", { name: "My Plushies" }).click();
+  await expect(page).toHaveURL(/\/plushies/);
+  await page.getByRole("link", { name: "Add Plushie" }).click();
+  await page.getByLabel("Name").fill("Comet");
+  await page.getByLabel("Species").fill("Dragon");
+  await page.getByLabel("Colorway").fill("Sky Blue");
+  await page.getByLabel("Hometown").fill("Boston, MA");
+  await page.getByLabel("Birthday").fill("2024-01-01");
+  await page.getByLabel("Adoption Date").fill("2024-02-01");
+  await page.getByLabel("Favorite Snack").fill("Blueberry gummies");
+  await page.getByLabel("Favorite Activity").fill("Cloud watching");
+  await page.getByLabel("Accessories").fill("Scarf, Satchel");
+  await page.getByLabel("Tagline").fill("Sparkly flyer");
+  await page.getByRole("button", { name: "Save Plushie" }).click();
+
+  await expect(page).toHaveURL(/\/plushies/);
+  await expect(page.getByRole("heading", { name: "Comet" })).toBeVisible();
 
   await page.goto("/logout");
   await expect(page.getByText("You have been logged out")).toBeVisible();

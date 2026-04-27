@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import {
+  addPlushie,
   defaultAuthState,
   getCurrentUser,
   loadAuthState,
@@ -22,6 +23,7 @@ import {
   toggleConnectedAccount,
   toggleNotificationPreference,
   updateProfile,
+  type AddPlushieInput,
   type AuthState,
   type ConnectedAccount,
   type LoginInput,
@@ -38,6 +40,7 @@ type AuthContextValue = {
   login: (input: LoginInput) => void;
   logout: () => void;
   saveProfile: (update: ProfileUpdate) => void;
+  addNewPlushie: (input: AddPlushieInput) => void;
   toggleNotification: (id: NotificationPreference["id"]) => void;
   toggleAccount: (id: ConnectedAccount["id"]) => void;
 };
@@ -83,6 +86,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState(updateProfile(stateRef.current, update));
   }, []);
 
+  const addNewPlushie = useCallback((input: AddPlushieInput) => {
+    setState(addPlushie(stateRef.current, input));
+  }, []);
+
   const toggleNotification = useCallback((id: NotificationPreference["id"]) => {
     setState(toggleNotificationPreference(stateRef.current, id));
   }, []);
@@ -102,10 +109,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       logout,
       saveProfile,
+      addNewPlushie,
       toggleNotification,
       toggleAccount,
     }),
-    [currentUser, isHydrated, login, logout, saveProfile, signUp, toggleAccount, toggleNotification],
+    [addNewPlushie, currentUser, isHydrated, login, logout, saveProfile, signUp, toggleAccount, toggleNotification],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

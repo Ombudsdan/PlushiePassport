@@ -34,7 +34,7 @@ export function AppSidebar({ activePath }: { activePath: string }) {
               key={item.label}
               href={item.href}
               label={item.label}
-              active={activePath === item.href || (item.href === "/profile" && activePath === "/profile")}
+              active={activePath === item.href || activePath.startsWith(`${item.href}/`)}
             />
           ))}
         </nav>

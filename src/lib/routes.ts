@@ -1,6 +1,6 @@
 export const navItems = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard#plushies", label: "My Plushies" },
+  { href: "/plushies", label: "My Plushies" },
   { href: "/dashboard#birthdays", label: "Birthdays" },
   { href: "/dashboard#friends", label: "Friends" },
   { href: "/dashboard#search", label: "Search" },

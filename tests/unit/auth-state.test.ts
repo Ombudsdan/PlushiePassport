@@ -1,4 +1,5 @@
 import {
+  addPlushie,
   defaultAuthState,
   getCurrentUser,
   loadAuthState,
@@ -19,6 +20,51 @@ describe("auth-state", () => {
     expect(loadAuthState({ getItem: () => null })).toEqual(defaultAuthState);
     expect(loadAuthState({ getItem: () => "not-json" })).toEqual(defaultAuthState);
     expect(loadAuthState({ getItem: () => JSON.stringify({ accounts: [], currentUserEmail: "x" }) })).toEqual(defaultAuthState);
+    expect(loadAuthState({ getItem: () => JSON.stringify({ currentUserEmail: null }) })).toEqual(defaultAuthState);
+  });
+
+  it("normalizes persisted accounts for legacy and complete records", () => {
+    const loaded = loadAuthState({
+      getItem: () =>
+        JSON.stringify({
+          accounts: [
+            {
+              displayName: "Legacy Collector",
+              username: "@legacy",
+              email: "legacy@example.com",
+              password: "secret",
+            },
+            {
+              username: "@mystery",
+              email: "mystery@example.com",
+              password: "secret",
+            },
+            {
+              ...seedAccount,
+              email: "full@example.com",
+            },
+            {
+              displayName: "Missing Email",
+            },
+          ],
+          currentUserEmail: "legacy@example.com",
+        }),
+    });
+
+    expect(loaded.currentUserEmail).toBe("legacy@example.com");
+    expect(loaded.accounts).toHaveLength(3);
+    expect(loaded.accounts[0]).toMatchObject({
+      displayName: "Legacy Collector",
+      plan: "Free Plan",
+      plushies: [],
+    });
+    expect(loaded.accounts[1]).toMatchObject({
+      displayName: "Plushie Collector",
+      username: "@mystery",
+    });
+    expect(loaded.accounts[2].notifications).toHaveLength(seedAccount.notifications.length);
+    expect(loaded.accounts[2].connectedAccounts).toHaveLength(seedAccount.connectedAccounts.length);
+    expect(loaded.accounts[2].plushies[0].name).toBe(seedAccount.plushies[0].name);
   });
 
   it("persists and returns the current user", () => {
@@ -46,6 +92,7 @@ describe("auth-state", () => {
       username: "@jamie_plush",
       email: "jamie@example.com",
       stats: { plushies: 0, friends: 0, birthdaysTracked: 0 },
+      plushies: [],
     });
   });
 
@@ -151,6 +198,77 @@ describe("auth-state", () => {
       email: "sarahupdated@example.com",
     });
     expect(updatedWithMultipleAccounts.accounts[1].email).toBe("jamie@example.com");
+  });
+
+  it("adds plushies and keeps other accounts untouched", () => {
+    const withSecondUser = signUpUser(defaultAuthState, {
+      displayName: "Jamie",
+      username: "jamie",
+      email: "jamie@example.com",
+      password: "StrongPass123!",
+      confirmPassword: "StrongPass123!",
+    });
+    const signedInState = { ...withSecondUser, currentUserEmail: seedAccount.email };
+
+    const updated = addPlushie(signedInState, {
+      name: "Comet",
+      species: "Dragon",
+      tagline: "Loves ferry rides and sparkly postcards.",
+      hometown: "Boston, MA",
+      birthday: "2024-01-01",
+      adoptionDate: "2024-02-01",
+      size: "Small",
+      status: "Ready for the next stamp",
+      favoriteSnack: "Blueberry gummies",
+      favoriteActivity: "Window-seat naps",
+      color: "Sky Blue",
+      accessories: "Tiny satchel, Scarf",
+    });
+
+    expect(updated.accounts[0].plushies[0]).toMatchObject({
+      id: "comet-9",
+      name: "Comet",
+      accessories: ["Tiny satchel", "Scarf"],
+      passportStamps: 0,
+      adventures: 0,
+    });
+    expect(updated.accounts[0].stats.plushies).toBe(seedAccount.plushies.length + 1);
+    expect(updated.accounts[1].plushies).toHaveLength(0);
+
+    expect(() =>
+      addPlushie(defaultAuthState, {
+        name: "Comet",
+        species: "Dragon",
+        tagline: "Loves ferry rides and sparkly postcards.",
+        hometown: "Boston, MA",
+        birthday: "2024-01-01",
+        adoptionDate: "2024-02-01",
+        size: "Small",
+        status: "Ready for the next stamp",
+        favoriteSnack: "Blueberry gummies",
+        favoriteActivity: "Window-seat naps",
+        color: "Sky Blue",
+        accessories: "Tiny satchel, Scarf",
+      }),
+    ).toThrow(
+      "You must be signed in to add a plushie.",
+    );
+    expect(() =>
+      addPlushie(signedInState, {
+        name: "",
+        species: "",
+        tagline: "",
+        hometown: "",
+        birthday: "",
+        adoptionDate: "",
+        size: "Tiny",
+        status: "At home",
+        favoriteSnack: "",
+        favoriteActivity: "",
+        color: "",
+        accessories: "",
+      }),
+    ).toThrow("Complete every plushie detail.");
   });
 
   it("updates notification and connected-account settings", () => {
