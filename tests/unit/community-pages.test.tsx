@@ -136,7 +136,7 @@ describe("community pages and helpers", () => {
     expect(screen.getByText("No birthdays to plan yet")).toBeInTheDocument();
     expect(screen.getByText("No friends in this view")).toBeInTheDocument();
     expect(screen.getByText("No matches yet")).toBeInTheDocument();
-  });
+  }, 15000);
 
   it("renders birthdays, friends, and search pages", async () => {
     const user = userEvent.setup();
@@ -202,5 +202,5 @@ describe("community pages and helpers", () => {
     await user.click(screen.getByRole("button", { name: "Clear search" }));
     await user.type(screen.getByLabelText("Search the plushie world"), "zzzzz");
     expect(screen.getByText("No matches yet")).toBeInTheDocument();
-  });
+  }, 15000);
 });

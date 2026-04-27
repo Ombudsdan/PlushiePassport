@@ -57,7 +57,7 @@ test("user can sign up, manage profile, add a plushie, review passport, and log 
 
   await page.getByRole("link", { name: "Search" }).click();
   await page.getByLabel("Search the plushie world").fill("Comet");
-  await expect(page.getByText("Comet")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comet", exact: true })).toBeVisible();
 
   await page.getByRole("link", { name: "Notifications" }).click();
   await expect(page).toHaveURL(/\/notifications/);
