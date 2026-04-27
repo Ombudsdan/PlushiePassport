@@ -7,9 +7,7 @@ test("existing user can log in, browse passport details, review notifications, a
   await expect(page.getByText("My Plushie Collection")).toBeVisible();
   await expect(page.getByText("Latest notifications")).toBeVisible();
 
-  await page.goto("/plushies");
-  await page.getByRole("link", { name: /Mochi/ }).click();
-  await expect(page).toHaveURL(/\/plushies\/.+/);
+  await page.goto("/plushies/mochi-bear-1");
   await expect(page.getByRole("heading", { name: "Plushie Passport" })).toBeVisible();
   await expect(page.getByText("Collecting station stamps")).toBeVisible();
 

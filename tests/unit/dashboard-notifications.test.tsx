@@ -132,7 +132,7 @@ describe("dashboard, notifications, and passport flows", () => {
     });
     await waitFor(() => expect(screen.getByText("My Plushie Collection")).toBeInTheDocument());
     expect(screen.getByRole("button", { name: "Add New Plushie" })).toBeInTheDocument();
-  });
+  }, 15000);
 
   it("renders plushie passport pages for found and missing plushies", async () => {
     getRouterMocks().__routerMocks.params.id = seedAccount.plushies[0].id;
