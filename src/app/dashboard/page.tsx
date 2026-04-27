@@ -53,7 +53,7 @@ export default function DashboardPage() {
 
             <section className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_0.85fr]">
               <div className="grid gap-6">
-                <div id="search" className="flex items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-4">
                   <div>
                     <h3 className="text-2xl font-bold text-[#171717]">Collection highlights</h3>
                     <p className="mt-2 text-sm text-[#716a60]">Your most active passports and adventure-ready plushies.</p>
@@ -70,9 +70,16 @@ export default function DashboardPage() {
               </div>
 
               <div className="grid gap-6">
-                <section id="calendar" className="rounded-[28px] border border-[#e7e0d5] bg-[#fcfaf6] p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-[#171717]">Upcoming birthdays</h3>
-                  <p className="mt-2 text-sm text-[#716a60]">Keep cards, cake, and commemorative stamps ready.</p>
+                <section className="rounded-[28px] border border-[#e7e0d5] bg-[#fcfaf6] p-6 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-[#171717]">Upcoming birthdays</h3>
+                      <p className="mt-2 text-sm text-[#716a60]">Keep cards, cake, and commemorative stamps ready.</p>
+                    </div>
+                    <Link href="/birthdays">
+                      <Button variant="ghost">Open birthdays</Button>
+                    </Link>
+                  </div>
                   <div className="mt-5 grid gap-3">
                     {upcomingBirthdays.map((plushie) => (
                       <BirthdayListItem key={plushie.id} plushie={plushie} />
@@ -80,13 +87,35 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section id="friends" className="rounded-[28px] border border-[#e7e0d5] bg-white p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-[#171717]">Circle snapshot</h3>
+                <section className="rounded-[28px] border border-[#e7e0d5] bg-white p-6 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="text-xl font-bold text-[#171717]">Circle snapshot</h3>
+                    <Link href="/friends">
+                      <Button variant="ghost">Open friends</Button>
+                    </Link>
+                  </div>
                   <div className="mt-5 grid gap-4 sm:grid-cols-2">
                     <StatTile label="Connected accounts" value={connectedCount} helper="Places you can share passport updates" />
                     <StatTile label="Favorite species" value={favoriteSpecies} helper="Most visible across your latest highlights" />
                   </div>
                 </section>
+              </div>
+            </section>
+
+            <section className="grid gap-4 rounded-[28px] border border-[#e7e0d5] bg-[#fcfaf6] p-6 shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-2xl font-bold text-[#171717]">Search shortcuts</h3>
+                  <p className="mt-2 text-sm text-[#716a60]">Jump straight into plushies, friends, or birthday planning.</p>
+                </div>
+                <Link href="/search">
+                  <Button variant="secondary">Open search</Button>
+                </Link>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                <StatTile label="Plushies" value={currentUser.stats.plushies} helper="Search every passport profile" />
+                <StatTile label="Friends" value={currentUser.friends.length} helper="Look up collectors in your circle" />
+                <StatTile label="Birthdays" value={upcomingBirthdays.length} helper="Find celebrations with one search" />
               </div>
             </section>
 

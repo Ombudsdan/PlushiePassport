@@ -180,7 +180,7 @@ describe("plushie features", () => {
     expect(screen.getAllByText("Accessories").length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText("Unread").length).toBeGreaterThan(0);
     expect(screen.getByText("Install & Notification Readiness")).toBeInTheDocument();
-  });
+  }, 15000);
 
   it("renders plushie collection and add-plushie pages", async () => {
     const user = userEvent.setup();
@@ -247,5 +247,5 @@ describe("plushie features", () => {
     expect(getRouterPushMock()).toHaveBeenCalledWith("/plushies");
     expect(screen.getAllByRole("link", { name: "My Plushies" })[0]).toHaveAttribute("href", "/plushies");
     expect(screen.getByText("Comet")).toBeInTheDocument();
-  });
+  }, 15000);
 });

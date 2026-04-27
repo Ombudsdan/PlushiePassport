@@ -12,6 +12,20 @@ export type ConnectedAccount = {
   connected: boolean;
 };
 
+export type UserFriend = {
+  id: string;
+  name: string;
+  username: string;
+  city: string;
+  bio: string;
+  favoritePlushie: string;
+  sharedTrips: number;
+  plushieCount: number;
+  mutualFriends: number;
+  requestState: "connected" | "pending" | "suggested";
+  isOnline: boolean;
+};
+
 export type PlushieSize = "Tiny" | "Small" | "Medium" | "Large";
 
 export type PlushieStatus = "At home" | "On an adventure" | "Ready for the next stamp";
@@ -51,6 +65,7 @@ export type UserAccount = {
   stats: UserStats;
   notifications: NotificationPreference[];
   connectedAccounts: ConnectedAccount[];
+  friends: UserFriend[];
   plushies: PlushieRecord[];
 };
 
@@ -136,6 +151,87 @@ const baseConnectedAccounts: ConnectedAccount[] = [
     title: "Apple",
     handle: "Available to connect",
     connected: false,
+  },
+];
+
+const baseFriends: UserFriend[] = [
+  {
+    id: "alex-chen",
+    name: "Alex Chen",
+    username: "@alex_plushies",
+    city: "San Jose, CA",
+    bio: "Collects tiny travel keepsakes and always packs extra birthday candles.",
+    favoritePlushie: "Starry Koala",
+    sharedTrips: 8,
+    plushieCount: 14,
+    mutualFriends: 6,
+    requestState: "connected",
+    isOnline: true,
+  },
+  {
+    id: "emma-wright",
+    name: "Emma Wright",
+    username: "@plush_paradise",
+    city: "Seattle, WA",
+    bio: "Birthday brunch planner for the plushie club and sender of the best postcards.",
+    favoritePlushie: "Honey Panda",
+    sharedTrips: 5,
+    plushieCount: 11,
+    mutualFriends: 4,
+    requestState: "pending",
+    isOnline: true,
+  },
+  {
+    id: "mia-rodriguez",
+    name: "Mia Rodriguez",
+    username: "@mia_and_mochi",
+    city: "Los Angeles, CA",
+    bio: "Adds cozy new plushies every month and photographs every passport stamp.",
+    favoritePlushie: "Strawberry Cow",
+    sharedTrips: 3,
+    plushieCount: 18,
+    mutualFriends: 9,
+    requestState: "connected",
+    isOnline: false,
+  },
+  {
+    id: "noah-park",
+    name: "Noah Park",
+    username: "@plushie_loop",
+    city: "Portland, OR",
+    bio: "Finds the best cafés for plushie meetups and keeps the crew organized.",
+    favoritePlushie: "Cloud Bunny",
+    sharedTrips: 2,
+    plushieCount: 9,
+    mutualFriends: 5,
+    requestState: "suggested",
+    isOnline: false,
+  },
+  {
+    id: "zoe-bennett",
+    name: "Zoe Bennett",
+    username: "@zoes_passports",
+    city: "Austin, TX",
+    bio: "Weekend explorer with a soft spot for birthday countdowns and surprise gift ideas.",
+    favoritePlushie: "Captain Whiskers",
+    sharedTrips: 6,
+    plushieCount: 12,
+    mutualFriends: 7,
+    requestState: "connected",
+    isOnline: true,
+  },
+  {
+    id: "liam-morgan",
+    name: "Liam Morgan",
+    username: "@little_stamp_book",
+    city: "Chicago, IL",
+    bio: "Always looking for new plushie pen pals and travel journal inspiration.",
+    favoritePlushie: "Bamboo Bear",
+    sharedTrips: 1,
+    plushieCount: 7,
+    mutualFriends: 3,
+    requestState: "suggested",
+    isOnline: true,
   },
 ];
 
@@ -288,11 +384,16 @@ function cloneConnectedAccounts(accounts: ConnectedAccount[] = baseConnectedAcco
   return accounts.map((account) => ({ ...account }));
 }
 
+function cloneFriends(friends: UserFriend[] = baseFriends): UserFriend[] {
+  return friends.map((friend) => ({ ...friend }));
+}
+
 function clonePlushies(plushies: PlushieRecord[] = basePlushies): PlushieRecord[] {
   return plushies.map((plushie) => ({ ...plushie, accessories: [...plushie.accessories] }));
 }
 
 function normalizeAccount(account: Partial<UserAccount>): UserAccount {
+  const friends = cloneFriends(account.friends ?? []);
   const plushies = clonePlushies(account.plushies ?? []);
 
   return {
@@ -314,6 +415,7 @@ function normalizeAccount(account: Partial<UserAccount>): UserAccount {
     connectedAccounts: account.connectedAccounts?.length
       ? cloneConnectedAccounts(account.connectedAccounts)
       : cloneConnectedAccounts(),
+    friends: account.friends?.length ? friends : cloneFriends(),
     plushies,
   };
 }
@@ -348,6 +450,7 @@ export const seedAccount: UserAccount = {
   },
   notifications: cloneNotificationPreferences(),
   connectedAccounts: cloneConnectedAccounts(),
+  friends: cloneFriends(),
   plushies: clonePlushies(),
 };
 
@@ -429,6 +532,7 @@ export function signUpUser(state: AuthState, input: SignUpInput): AuthState {
     },
     notifications: cloneNotificationPreferences(),
     connectedAccounts: cloneConnectedAccounts(),
+    friends: [],
     plushies: [],
   };
 

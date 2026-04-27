@@ -26,6 +26,14 @@ test("user can sign up, manage profile, add a plushie, review passport, and log 
   await page.getByRole("button", { name: "Add Account" }).click();
   await expect(page.getByText("Connected Accounts")).toBeVisible();
 
+  await page.getByRole("link", { name: "Birthdays" }).click();
+  await expect(page).toHaveURL(/\/birthdays/);
+  await expect(page.getByText("No birthdays to plan yet")).toBeVisible();
+
+  await page.getByRole("link", { name: "Search" }).click();
+  await expect(page).toHaveURL(/\/search/);
+  await expect(page.getByText("No matches yet")).toBeVisible();
+
   await page.getByRole("link", { name: "My Plushies" }).click();
   await expect(page).toHaveURL(/\/plushies/);
   await page.getByRole("link", { name: "Add Plushie" }).click();
@@ -46,6 +54,10 @@ test("user can sign up, manage profile, add a plushie, review passport, and log 
   await expect(page).toHaveURL(/\/plushies\//);
   await expect(page.getByRole("heading", { name: "Plushie Passport" })).toBeVisible();
   await expect(page.getByText("Blueberry gummies")).toBeVisible();
+
+  await page.getByRole("link", { name: "Search" }).click();
+  await page.getByLabel("Search the plushie world").fill("Comet");
+  await expect(page.getByText("Comet")).toBeVisible();
 
   await page.getByRole("link", { name: "Notifications" }).click();
   await expect(page).toHaveURL(/\/notifications/);
